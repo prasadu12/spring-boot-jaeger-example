@@ -11,7 +11,7 @@ options {
 buildDiscarder(logRotator(numToKeepStr: '10'))
 }
 
-
+stages{
 stage('Build and package') {
 agent {
 docker {
@@ -27,6 +27,7 @@ sh 'mvn clean package -DskipTests'
 sh 'ls -lart'
 sh 'pwd'
 
+}
 }
 }
 }
