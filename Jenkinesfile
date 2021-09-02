@@ -5,7 +5,7 @@ pipeline {
       stage('Build') {
          steps {
             // Get some code from a GitHub repository
-            git 'https://github.com/prasadu12/spring-boot-jaeger-example.git/<your-username>/prasadu12'
+            git 'https://github.com/prasadu12/spring-boot-jaeger-example.git'
 
             // Run Maven on a Unix agent.
             sh "./mvnw -Dmaven.test.failure.ignore=true clean package"
