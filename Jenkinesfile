@@ -1,11 +1,33 @@
 pipeline {
-agent any 
-
-options {
-buildDiscarder(logRotator(numToKeepStr: '10'))
+agent {
+node {
+label 'docker'
+}
 }
 
-stages{
+stages {
+
+stage('code compile') {
+
+agent {
+docker {
+alwaysPull true
+reuseNode true
+image 'maven:3-amazoncorretto-11'
+}
+}
+steps {
+script {
+configFileProvider([configFile(fileId: 'ss-m2-settings', variable: 'M2_SETTINGS')]) {
+
+sh 'mvn -s $M2_SETTINGS -B -e compile'
+}
+}
+}
+
+}
+
+
 stage('Build and package') {
 agent {
 docker {
@@ -22,6 +44,9 @@ sh 'ls -lart'
 sh 'pwd'
 
 }
+
+
 }
 }
 }
+
