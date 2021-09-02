@@ -21,7 +21,7 @@ pipeline {
     }
 
 	
-	 def FUNC_NAME = "{params.lambda}"
+	 
     
 	
     stages {
