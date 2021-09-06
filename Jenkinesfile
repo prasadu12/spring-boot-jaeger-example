@@ -1,16 +1,63 @@
 pipeline {
-    agent any
-    
-    stages {
-        stage('Build') {
-            steps {
-                sh 'mvn clean install -DskipTests'
-            }
+    agent {
+        node {
+            label 'docker'
         }
-        stage('Test') {
-            steps {
-                sh 'mvn test'
-            }
+    }
+  environment {
+        AWS_ACCOUNT_ID=""
+        AWS_DEFAULT_REGION="" 
+
+            } 
+
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+ 
+   stages {
+
+           stage('code compile') {
+
+            agent {
+        docker {
+          alwaysPull true    
+          reuseNode true
+          image 'maven:3-amazoncorretto-11'
         }
-    }   
+      }
+
+            steps {
+                script {
+                    configFileProvider([configFile(fileId: 'ss-m2-settings', variable: 'M2_SETTINGS')]) {
+
+                        sh 'mvn -s $M2_SETTINGS -B -e compile'
+                    }
+                }
+            }
+
+
+                    }
+ 
+        
+
+stage('Build and package') {
+agent {
+        docker {
+          alwaysPull true
+          reuseNode true
+          image 'maven:3-amazoncorretto-11'
+
+        }
+      } 
+            steps {
+            //sh 'mvn clean install -DskipTests'
+            sh 'mvn clean package -DskipTests'
+            sh 'ls -lart'
+            sh 'pwd'
+            
+            }
+ 
+        }
+ }
 }
