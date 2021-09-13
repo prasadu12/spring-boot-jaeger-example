@@ -1,21 +1,20 @@
 pipeline {
     agent any
-
-    stages {
-    stage ('Build') {
-      steps {
-      sh 'mvn clean install'
-            }
-        }
-        stage('Test') {
-            steps {
-                echo 'Testing..'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying....'
-            }
+    
+    tools {
+          maven 'MAVEN'
+    }
+   stages {     
+       stage('checkout') {
+           steps {
+            checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'git-credentials', url: 'https://github.com/prasadu12/spring-boot-jaeger-example']]])
         }
     }
+    stage('Build') { 
+        steps{
+             sh 'mvn clean install -f jaeger-client/pom.xml'         
+   
+       }
+     }
+   }
 }
