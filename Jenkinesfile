@@ -1,21 +1,27 @@
 pipeline {
-    agent none
-    stages {
-        stage('Back-end') {
-            agent {
-                docker { image 'maven:3.8.1-adoptopenjdk-11' }
-            }
-            steps {
-                sh 'mvn --version'
-            }
-        }
-        stage('Front-end') {
-            agent {
-                docker { image 'node:14-alpine' }
-            }
-            steps {
-                sh 'node --version'
-            }
+    agent any
+    
+    tools {
+          maven 'MAVEN'
+    }
+   stages {     
+       stage('checkout') {
+           steps {
+            checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'git-credentials', url: 'https://github.com/prasadu12/spring-boot-jaeger-example']]])
         }
     }
+    stage('Build') { 
+        steps{
+             sh 'mvn clean install -f jaeger-client/pom.xml' 
+        }
+    }
+     stage('Build') { 
+        steps{        
+             
+             docker { image 'maven:3.8.1-adoptopenjdk-11' }
+   
+       }
+     }
+   }
 }
+
