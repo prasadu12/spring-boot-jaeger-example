@@ -13,8 +13,8 @@ pipeline {
     stage('Build') { 
         steps{
              sh 'mvn clean install -f jaeger-client/pom.xml'         
-   stage
-       docker { image 'node:14-alpine' }
+   docker { image 'maven:3.8.1-adoptopenjdk-11' }
+             }
        }
      }
    }
