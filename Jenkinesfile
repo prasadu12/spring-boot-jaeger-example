@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'jenkins/jenkins   "/sbin/tini -- /usr/…" ' 
+            image 'jenkins/jenkins' 
             
         }
     }
