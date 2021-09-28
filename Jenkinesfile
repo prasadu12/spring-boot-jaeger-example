@@ -4,7 +4,7 @@ pipeline {
     tools {
           maven 'MAVEN'
     }
-   stages {     
+   stages {    
        stage('checkout') {
            steps {
             checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'git-credentials', url: 'https://github.com/prasadu12/spring-boot-jaeger-example']]])
@@ -13,8 +13,7 @@ pipeline {
     stage('Build') { 
         steps{
              sh 'mvn clean install -f jaeger-client/pom.xml'         
-   
-             }
+  
        }
      }
    }
