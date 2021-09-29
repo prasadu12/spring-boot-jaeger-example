@@ -1,32 +1,20 @@
 pipeline {
     agent any
-
-    environment {
-        IMAGE_NAME = "mymaven" 
+    
+    tools {
+          maven 'MAVEN'
     }
-
-    stages {
-        stage("Build docker images") {
-            steps {
-                script {
-                    def versions = readYaml file: "versions.yml" 
-
-                    def stages = versions.images.collectEntries { label, props -> 
-                        [(label): {
-                            stage(label) {
-                                sh """docker build \
-                                --build-arg JAVA_VERSION=${props.java} \
-                                --build-arg MAVEN_VERSION=${props.maven} \
-                                ${collectTags(props.tags, env.IMAGE_NAME)} \
-                                .
-                            """
-                            }
-                        }]
-                    }
-
-                    parallel stages 
-                }
-            }
+   stages {     
+       stage('checkout') {
+           steps {
+            checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'git-credentials', url: 'https://github.com/prasadu12/spring-boot-jaeger-example']]])
         }
     }
+    stage('Build') { 
+        steps{
+             sh 'mvn clean install -f jaeger-client/pom.xml'   
+          
+       }
+     }
+   }
 }
