@@ -1,20 +1,21 @@
 pipeline {
-    agent any
-    
-    tools {
-          maven 'MAVEN'
+  agent {
+    docker {
+      image 'emil2709/servopsdockerfile'
+      args '-d -p 80:80 /usr/sbin/apache2ctl -D FOREGROUND'
     }
-   stages {     
-       stage('checkout') {
-           steps {
-            checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'git-credentials', url: 'https://github.com/prasadu12/spring-boot-jaeger-example']]])
-        }
+  }
+
+  stages {
+    stage ('Testing') {
+      steps {
+        sh 'echo testing'
+      }
     }
-    stage('Build') { 
-        steps{
-             sh 'mvn clean install -f jaeger-client/pom.xml'   
-          
-       }
-     }
-   }
+    stage ('Deploying') {
+      steps {
+        sh 'echo deploying'
+      }
+    }
+  }
 }
