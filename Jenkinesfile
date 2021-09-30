@@ -1,21 +1,21 @@
 pipeline {
-  agent {
-    docker {
-      image 'emil2709/servopsdockerfile'
-      args '-d -p 80:80 /usr/sbin/apache2ctl -D FOREGROUND'
+    agent none
+    stages {
+        stage('Back-end') {
+            agent {
+                docker { image 'maven:3.8.1-adoptopenjdk-11' }
+            }
+            steps {
+                sh 'mvn --version'
+            }
+        }
+        stage('Front-end') {
+            agent {
+                docker { image 'node:14-alpine' }
+            }
+            steps {
+                sh 'node --version'
+            }
+        }
     }
-  }
-
-  stages {
-    stage ('Testing') {
-      steps {
-        sh 'echo testing'
-      }
-    }
-    stage ('Deploying') {
-      steps {
-        sh 'echo deploying'
-      }
-    }
-  }
 }
